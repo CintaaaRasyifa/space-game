@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Game || CINTA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <h1>Space Game</h1>
+    <h4>by Cinta </h4>
+    <h3>Score : <span id="score">0</span></h3>
+    <div id="main" style="background-position-y: 0;">
+        <div id="area">
+            <div id="plane"></div>
+            <div id="meteor" style="margin-top: 600px;"></div>   
+        </div>
+    </div>
+    <script type="text/javascript">
+        // Inisialisasi variabel global
+        var plane = document.getElementById('plane');
+        var topPos = 400; // posisi awal pesawat
+        var leftPos = 160; // posisi awal pesawat
+        var score = 0; // skor awal
+
+        // Fungsi untuk menggerakkan latar belakang
+        function setBackgroundMoving() {
+            setTimeout(function () {
+                var bg = document.getElementById('main');
+                bg.style.backgroundPositionY = (parseInt(bg.style.backgroundPositionY.replace('px', '')) + 1) + 'px';
+                setBackgroundMoving();
+            }, 5);
+        }
+        
+        // Fungsi untuk menggerakkan pesawat
+        function movePlane() {
+            plane.style.marginTop = topPos + 'px';
+            plane.style.marginLeft = leftPos + 'px';
+        }
+
+        // Fungsi untuk memperbarui skor
+        function updateScore() {
+            score += 10;
+            document.getElementById('score').textContent = score;
+        }
+
+        // Inisialisasi pergerakan latar belakang
+        setBackgroundMoving();
+        // Inisialisasi pergerakan pesawat
+        movePlane();
+
+        // Fungsi untuk menggerakkan meteor
+        function setMeteorMoving() {
+            var meteor = document.getElementById('meteor');
+            plane = document.getElementById('plane');
+
+            setTimeout(function () {
+                // Pergerakan meteor ke bawah
+                meteor.style.marginTop = (parseInt(meteor.style.marginTop.replace('px', '')) + 2) + 'px';
+
+                // Jika meteor melewati batas bawah, kembalikan ke atas dan pilih posisi acak
+                if (parseInt(meteor.style.marginTop.replace('px', '')) > 500) {
+                    meteor.style.marginLeft = (Math.floor(Math.random() * 250) + 50) + 'px';
+                    meteor.style.marginTop = "-100px";
+                }
+
+                // Deteksi tabrakan antara pesawat dan meteor
+                if (meteor.offsetTop + 56 >= plane.offsetTop &&
+                    meteor.offsetLeft + 50 >= plane.offsetLeft &&
+                    meteor.offsetTop <= plane.offsetTop + 100 &&
+                    meteor.offsetLeft <= plane.offsetLeft + 50) {
+                    alert('Game Over, Score: ' + document.getElementById('score').innerHTML);
+                } else {
+                    setMeteorMoving();
+                }
+            }, 1); // Mengurangi timeout untuk mempercepat pergerakan
+        }
+
+        // Inisialisasi pergerakan meteor
+        setMeteorMoving();
+
+        // Mendengarkan tombol yang ditekan
+        window.addEventListener('keydown', function (e) {
+            if (e.keyCode == 37) {
+                // Bergerak ke kiri
+                if (leftPos > 0) {
+                    leftPos -= 10;
+                    movePlane();
+                }
+            } else if (e.keyCode == 38) {
+                // Bergerak ke atas
+                if (topPos > 0) {
+                    topPos -= 10;
+                    movePlane();
+                }
+            } else if (e.keyCode == 39) {
+                // Bergerak ke kanan
+                if (leftPos < 340) {
+                    leftPos += 10;
+                    movePlane();
+                }
+            } else if (e.keyCode == 40) {
+                // Bergerak ke bawah
+                if (topPos < 400) {
+                    topPos += 10;
+                    movePlane();
+                }
+            }
+            
+            // Memperbarui skor setelah pergerakan pesawat
+            updateScore();
+        });
+    </script>
+</body>
+</html>
